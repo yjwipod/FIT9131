@@ -72,9 +72,10 @@ public class Game
                 }
                 else
                 {
-                    System.out.print(newPlayer.getName() + " now wins " + win + " round(s), and loses " + loss + " round(s)." + "Your balance is $" + balance + ".");
+                    System.out.println(newPlayer.getName() + " now wins " + win + " round(s), and loses " + loss + " round(s)." + "Your balance is $" + balance + ".");
                     getPercent();
                 }
+                System.out.println("");
                 keyScanner();
                 break;
             case "4":
@@ -100,15 +101,15 @@ public class Game
 
     public void getPercent()
     {
-        if(newPlayer.getLoss() == 0)
+        if(loss == 0)
         {
-            if(newPlayer.getWin() != 0)
+            if(win != 0)
                 System.out.println(" Your winning percentage is 100%!!!");
             else
                 System.out.println(" The game has not been started!");
         }
         else
-            System.out.print(" Your winning percentage is " + newPlayer.getWin() / newPlayer.getLoss() + "%");
+            System.out.print(" Your winning percentage is " + win * 1.0 / loss * 100 + "%");
     }
 
     public void gamePlay()
@@ -130,7 +131,7 @@ public class Game
                     setPrize();
                     int conPrize = getPrize();
                     balance = balance + conPrize;
-                    System.out.print("Congratulations! Your win and get " + conPrize + " for consolation prize.");
+                    System.out.println("Congratulations! The lucky number is " + targetNumber + ". You win and get " + conPrize + " for consolation prize.");
                     break;
                 }
                 else
@@ -161,7 +162,7 @@ public class Game
                 {
                     if(guessNumber - targetNumber > 0)
                     {
-                        System.out.print("Your number need to be lower.");
+                        System.out.print("Your number need to be lower. ");
                     }
                     else
                     {
