@@ -28,7 +28,6 @@ public class Player
         System.out.print("Please enter your name: ");
         name = console.nextLine();
         System.out.println("Welcome and enjoy, " + name);
-        //name = newName;
     }
     
     public String getName()
@@ -36,9 +35,9 @@ public class Player
         return name;
     }
     
-    public void setWin(int winNumber)
+    public void setWin()
     {
-        win = winNumber;
+        win ++;
     }
     
     public int getWin()
@@ -46,9 +45,9 @@ public class Player
         return win;
     }
     
-    public void setLoss(int lossNumber)
+    public void setLoss()
     {
-        loss = lossNumber;
+        loss ++;
     }
     
     public int getLoss()
@@ -56,15 +55,31 @@ public class Player
         return loss;
     }
     
-    public void setBalance(int newBalance)
+    public void setBalance(int number)
     {
-        balance = newBalance;
+        balance = balance + number;
     }
+    
+    public void resetBalance()
+    {
+        balance = balance * 0;
+    }
+    
     
     public int getBalance()
     {
         return balance;
     }
     
-
+    public void setGuessNumber()
+    {
+        Scanner console = new Scanner(System.in);
+        System.out.print("Please enter your guessing number: ");
+        guessNumber = console.nextInt();
+    }
+  
+    public int getGuessNumber()
+    {
+        return guessNumber;
+    }
 }

@@ -7,19 +7,12 @@ public class Game
     private String key;
     private LuckyNumberGenerator luckyNumber;
     private LuckyNumberGenerator consolationPrize;
-    private int win;
-    private int loss;
-    private int balance; 
-    private int guessNumber;
     private Random prizeGenerator;
     private int prize;
     
     public Game()
     {
         newPlayer = new Player();
-        win = newPlayer.getWin();
-        loss = newPlayer.getLoss();
-        balance = newPlayer.getBalance();
         updateDisplay();        
     }
 
@@ -49,48 +42,24 @@ public class Game
         {
             case "1":                  
                 newPlayer.setName();
-                //System.out.print("test 1");
                 keyScanner();
                 break;
             case "2":
-                if (newPlayer.getName() == "null")
-                { 
-                    System.out.println("Please press 1 to set a player first.");
-                    keyScanner();
-                    //return case "1";
-                }
-                else
-                    gamePlay();
+                checkOpt();
+                gamePlay();
                 keyScanner();
                 break;
             case "3":
-                if (newPlayer.getName() == "null")
-                { 
-                    System.out.println("Please press 1 to set a player first.");
-                    keyScanner();
-                    //return case "1";
-                }
-                else
-                {
-                    System.out.println(newPlayer.getName() + " now wins " + win + " round(s), and loses " + loss + " round(s)." + "Your balance is $" + balance + ".");
-                    getPercent();
-                }
-                System.out.println("");
+                checkOpt();
+                getStatistics();
                 keyScanner();
                 break;
             case "4":
-                System.out.println("1,Please set up a player before any other option.");
-                System.out.println("2,Only one player can play it at one time.");
-                System.out.println("3,You will guess a random integer lucky number between 1 to 100(inclusive).");
-                System.out.println("4,There are 3 chances in a round, and do not waste chance by inputing a number out of range. ");
-                System.out.println("5,You will get $10 for rewarding any success guessing in 3 times.");
-                System.out.println("6,If your guess number is within ±5 of the lucky number, you will win a round and get $1-$5 consolation prize.");
+                displayHelp();
                 keyScanner();
-                //System.out.println("");
                 break;
             case "5":
                 System.exit(0);
-                //System.out.print("test 5");
                 break;
             default:
                 System.out.println("Please select the options from 1 to 5, thank you!");
@@ -99,51 +68,61 @@ public class Game
         }
     }
 
-    public void getPercent()
+    public void checkOpt()
     {
-        if(loss == 0)
+        if (newPlayer.getName() == "null")
+        { 
+            System.out.println("Please press 1 to set a player first.");
+            keyScanner(); 
+        }
+    }
+    
+    public void getStatistics()
+    {
+        System.out.print(newPlayer.getName() + " now wins " + newPlayer.getWin() + " round(s), and loses " + newPlayer.getLoss ()+ " round(s)." + "Your balance is $" + newPlayer.getBalance() + ".");
+        if(newPlayer.getLoss() == 0)
         {
-            if(win != 0)
+            if(newPlayer.getWin() != 0)
                 System.out.println(" Your winning percentage is 100%!!!");
             else
                 System.out.println(" The game has not been started!");
         }
         else
-            System.out.print(" Your winning percentage is " + win * 1.0 / loss * 100 + "%");
+            System.out.println(" Your winning percentage is " + newPlayer.getWin() * 1.0 / (newPlayer.getLoss() + newPlayer.getWin()) * 100 + "%");
     }
-
+    
     public void gamePlay()
     {
         luckyNumber = new LuckyNumberGenerator();
         int targetNumber = luckyNumber.getTargetNumber();
         int round = 1;
-
         while(round <= 3)
         {   
-            setGuessNumber();
-            int guessNumber = getGuessNumber();
+            newPlayer.setGuessNumber();
+            int guessNumber = newPlayer.getGuessNumber();
             if (round == 3)
             {
                 if(guessNumber - targetNumber <= 5 && guessNumber - targetNumber >= -5 && guessNumber <= 100)
                 {
-                    win = win + 1;
+                    newPlayer.setWin();
                     consolationPrize = new LuckyNumberGenerator();
                     setPrize();
                     int conPrize = getPrize();
-                    balance = balance + conPrize;
-                    System.out.println("Congratulations! The lucky number is " + targetNumber + ". You win and get " + conPrize + " for consolation prize.");
+                    newPlayer.setBalance(conPrize);
+                    System.out.println("Congratulations! The lucky number is " + targetNumber + ". Your win and get " + conPrize + " for consolation prize.");
                     break;
                 }
                 else
                 {
-                    balance = balance - 1;
-                    if(balance < 0)
-                       balance = 0;
-                    loss = loss + 1;
+                    newPlayer.setLoss();
                     System.out.println("Sorry, your guesses were wrong. You have lost the game and $1. The lucy number is " + targetNumber + ". Please try again and have a good luck!"); 
+                    newPlayer.setBalance(-1);
+                    if(newPlayer.getBalance() < 0)
+                       newPlayer.resetBalance();
                     break;
                 }                
             }
+            
             if(guessNumber > 100)
             {
                 System.out.println("The guess number should be between 1 to 100.");
@@ -153,39 +132,37 @@ public class Game
             {            
                 if(guessNumber - targetNumber == 0)
                 {
-                    win = win + 1;
-                    balance = balance + 10;
-                    System.out.println("Your number is correct!. You win $10!");
+                    newPlayer.setWin();
+                    newPlayer.setBalance(10);
+                    System.out.println("Your number is correct! You win $10!");
                     break;
                 }
                 else
                 {
                     if(guessNumber - targetNumber > 0)
                     {
-                        System.out.print("Your number need to be lower. ");
+                        System.out.println("Your number need to be lower. ");
                     }
                     else
                     {
-                        System.out.print("Your number need to be higher.");
+                        System.out.println("Your number need to be higher.");
                     }
                 }
                 round ++;
             }
         }
-     }
-                   
-    public void setGuessNumber()
-    {
-        Scanner console = new Scanner(System.in);
-        System.out.print("Please enter your guessing number: ");
-        guessNumber = console.nextInt();
-    }
-
-    public int getGuessNumber()
-    {
-        return guessNumber;
-    }
+     }       
     
+    public void displayHelp()
+    {
+        System.out.println("1,Please set up a player before any other option.");
+        System.out.println("2,Only one player can play it at one time.");
+        System.out.println("3,You will guess a random integer lucky number between 1 to 100(inclusive).");
+        System.out.println("4,There are 3 chances in a round, and do not waste chance by inputing a number out of range. ");
+        System.out.println("5,You will get $10 for rewarding any success guessing in 3 times.");
+        System.out.println("6,If your guess number is within ±5 of the lucky number, you will win a round and get $1-$5 consolation prize.");
+    }
+     
     public void setPrize()
     {
         prizeGenerator = new Random();
