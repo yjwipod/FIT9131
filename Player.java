@@ -6,11 +6,11 @@ public class Player
     private int win;
     private int loss;
     private int balance;
-    private int guessNumber;
+    private String guessNumber;
     
     public Player()
     {
-        name = "null";
+        name = null;
         win = 0;
         loss = 0;
     }
@@ -75,11 +75,17 @@ public class Player
     {
         Scanner console = new Scanner(System.in);
         System.out.print("Please enter your guessing number: ");
-        guessNumber = console.nextInt();
+        guessNumber = console.nextLine();
     }
-  
-    public int getGuessNumber()
+    
+    public String getGuessNumber()
     {
         return guessNumber;
+    }
+    
+    public int getNum()
+    {
+        int number = Integer.parseInt(guessNumber);
+        return number;
     }
 }

@@ -70,7 +70,7 @@ public class Game
 
     public void checkOpt()
     {
-        if (newPlayer.getName() == "null")
+        if (newPlayer.getName() == null)
         { 
             System.out.println("Please press 1 to set a player first.");
             keyScanner(); 
@@ -91,67 +91,118 @@ public class Game
             System.out.println(" Your winning percentage is " + newPlayer.getWin() * 1.0 / (newPlayer.getLoss() + newPlayer.getWin()) * 100 + "%");
     }
     
+    public boolean isCharacterNumeric(char typeIn)
+    {
+        boolean checkNum;
+        Character a = typeIn;
+        if(a.isDigit(a))
+            checkNum = true;
+        else
+            checkNum = false;
+        return checkNum;
+    }
+
+    public boolean isStringNumeric(String typeIn)
+    {
+        boolean checkStrNum = true;
+        int position = 0;
+        
+        while(position < typeIn.length())
+        {
+            if (isCharacterNumeric(typeIn.charAt(position)))
+                {
+                    position ++;
+                    if (position == typeIn.length() - 1)
+                        checkStrNum = true; 
+                }
+            else 
+                {
+                    checkStrNum = false;
+                    break;
+                }
+        }
+        return checkStrNum;        
+    }
+    
     public void gamePlay()
     {
         luckyNumber = new LuckyNumberGenerator();
         int targetNumber = luckyNumber.getTargetNumber();
         int round = 1;
+        int guessNumber;
         while(round <= 3)
         {   
             newPlayer.setGuessNumber();
-            int guessNumber = newPlayer.getGuessNumber();
-            if (round == 3)
-            {
-                if(guessNumber - targetNumber <= 5 && guessNumber - targetNumber >= -5 && guessNumber <= 100)
+            if (isStringNumeric(newPlayer.getGuessNumber()))            
                 {
-                    newPlayer.setWin();
-                    consolationPrize = new LuckyNumberGenerator();
-                    setPrize();
-                    int conPrize = getPrize();
-                    newPlayer.setBalance(conPrize);
-                    System.out.println("Congratulations! The lucky number is " + targetNumber + ". Your win and get " + conPrize + " for consolation prize.");
-                    break;
-                }
-                else
-                {
-                    newPlayer.setLoss();
-                    System.out.println("Sorry, your guesses were wrong. You have lost the game and $1. The lucy number is " + targetNumber + ". Please try again and have a good luck!"); 
-                    newPlayer.setBalance(-1);
-                    if(newPlayer.getBalance() < 0)
-                       newPlayer.resetBalance();
-                    break;
-                }                
-            }
-            
-            if(guessNumber > 100)
-            {
-                System.out.println("The guess number should be between 1 to 100.");
-                round ++;                
-            }
-            else
-            {            
-                if(guessNumber - targetNumber == 0)
-                {
-                    newPlayer.setWin();
-                    newPlayer.setBalance(10);
-                    System.out.println("Your number is correct! You win $10!");
-                    break;
-                }
-                else
-                {
-                    if(guessNumber - targetNumber > 0)
+                    guessNumber = newPlayer.getNum();
+                    if (round == 3)
                     {
-                        System.out.println("Your number need to be lower. ");
+                        if(guessNumber - targetNumber <= 5 && guessNumber - targetNumber >= -5 && guessNumber <= 100)
+                        {
+                            newPlayer.setWin();
+                            consolationPrize = new LuckyNumberGenerator();
+                            setPrize();
+                            int conPrize = getPrize();
+                            newPlayer.setBalance(conPrize);
+                            System.out.println("Congratulations! The lucky number is " + targetNumber + ". Your win and get " + conPrize + " for consolation prize.");
+                            break;
+                        }
+                        else
+                        {
+                            newPlayer.setLoss();
+                            System.out.println("Sorry, your guesses were wrong. You have lost the game and $1. The lucy number is " + targetNumber + ". Please try again and have a good luck!"); 
+                            newPlayer.setBalance(-1);
+                            if(newPlayer.getBalance() < 0)
+                               newPlayer.resetBalance();
+                            break;
+                        }                
+                    }
+                    
+                    if(guessNumber > 100)
+                    {
+                        System.out.println("The guess number should be between 1 to 100.");
+                        round ++;                
+                    }
+                    else
+                    {            
+                        if(guessNumber - targetNumber == 0)
+                        {
+                            newPlayer.setWin();
+                            newPlayer.setBalance(10);
+                            System.out.println("Your number is correct! You win $10!");
+                            break;
+                        }
+                        else
+                        {
+                            if(guessNumber - targetNumber > 0)
+                            {
+                                System.out.println("Your number need to be lower. ");
+                            }
+                            else
+                            {
+                                System.out.println("Your number need to be higher.");
+                            }
+                        }
+                    }
+                }
+                
+            else                
+                {
+                    if(round == 3)
+                    {
+                        System.out.println("You have not entered an integer number in the last round, and the game is over.");
                     }
                     else
                     {
-                        System.out.println("Your number need to be higher.");
+                    System.out.println("Please enter an integer number bewteen 1 to 100");
                     }
-                }
-                round ++;
-            }
+                }   
+                
+            round ++;
         }
-     }       
+    }
+            
     
     public void displayHelp()
     {
