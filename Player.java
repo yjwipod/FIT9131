@@ -1,4 +1,4 @@
-import java.util.Scanner;
+//import java.util.Scanner;
 
 public class Player
 {
@@ -22,11 +22,10 @@ public class Player
         loss = 0;
     }
     
-    public void setName()
+    public void setName(String typeIn)
     {
-        Scanner console = new Scanner(System.in);
-        System.out.print("Please enter your name: ");
-        name = console.nextLine();
+        
+        name = typeIn;
         System.out.println("Welcome and enjoy, " + name);
     }
     
@@ -34,6 +33,18 @@ public class Player
     {
         return name;
     }
+//     public void setName()
+//     {
+//         Scanner console = new Scanner(System.in);
+//         System.out.print("Please enter your name: ");
+//         name = console.nextLine();
+//         System.out.println("Welcome and enjoy, " + name);
+//     }
+//     
+//     public String getName()
+//     {
+//         return name;
+//     }
     
     public void setWin()
     {
@@ -66,16 +77,16 @@ public class Player
     }
     
     
+    
     public int getBalance()
     {
         return balance;
     }
     
-    public void setGuessNumber()
+    
+    public void setGuessNumber(String typeIn)
     {
-        Scanner console = new Scanner(System.in);
-        System.out.print("Please enter your guessing number: ");
-        guessNumber = console.nextLine();
+        guessNumber = typeIn;
     }
     
     public String getGuessNumber()

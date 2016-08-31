@@ -1,19 +1,15 @@
 import java.util.Scanner;
-import java.util.Random;
 
 public class Game
 {
     private Player newPlayer;
-    private String key;
-    private LuckyNumberGenerator luckyNumber;
-    private LuckyNumberGenerator consolationPrize;
-    private Random prizeGenerator;
-    private int prize;
-    
+    private RandomNumberGenerator randomNumber;
+
     public Game()
     {
         newPlayer = new Player();
-        updateDisplay();        
+        randomNumber = new RandomNumberGenerator();
+        playerOption();
     }
 
     public void updateDisplay()
@@ -25,115 +21,120 @@ public class Game
         System.out.println("(3) Display Player Wins Statistics");
         System.out.println("(4) Display Game Help");
         System.out.println("(5) Exit Game");
-        keyScanner();
+        System.out.print("Choose an option :" );
     }
 
-    public void keyScanner()
+    public String typeInName()
     {
-        System.out.print("Choose an option :" );
+        System.out.print("Please enter your name: ");
         Scanner console = new Scanner(System.in);
-        key = console.nextLine();
-        playerOption();
+        String typeIn = console.nextLine();
+        return typeIn;
     }
 
     public void playerOption()
     {
-        switch (key)
+        String key = "a";
+        while (key.equals("5") == false)
         {
-            case "1":                  
-                newPlayer.setName();
-                keyScanner();
+            updateDisplay();
+            Scanner console = new Scanner(System.in);
+            key = console.nextLine();
+            switch (key)
+            {
+                case "1":
+                newPlayer.setName(typeInName());
                 break;
-            case "2":
-                checkOpt();
+                case "2":
                 gamePlay();
-                keyScanner();
                 break;
-            case "3":
-                checkOpt();
+                case "3":
                 getStatistics();
-                keyScanner();
                 break;
-            case "4":
+                case "4":
                 displayHelp();
-                keyScanner();
                 break;
-            case "5":
-                System.exit(0);
+                case "5":
+                System.out.println("Thank you for your playing! See you next time!");
                 break;
-            default:
+                default:
                 System.out.println("Please select the options from 1 to 5, thank you!");
-                keyScanner();
                 break;
+            }
         }
     }
 
-    public void checkOpt()
-    {
-        if (newPlayer.getName() == null)
-        { 
-            System.out.println("Please press 1 to set a player first.");
-            keyScanner(); 
-        }
-    }
-    
     public void getStatistics()
     {
-        System.out.print(newPlayer.getName() + " now wins " + newPlayer.getWin() + " round(s), and loses " + newPlayer.getLoss ()+ " round(s)." + "Your balance is $" + newPlayer.getBalance() + ".");
-        if(newPlayer.getLoss() == 0)
+        if(newPlayer.getName() == null)
         {
-            if(newPlayer.getWin() != 0)
-                System.out.println(" Your winning percentage is 100%!!!");
-            else
-                System.out.println(" The game has not been started!");
+            System.out.println("Please press 1 to set a player first.");
         }
         else
-            System.out.println(" Your winning percentage is " + newPlayer.getWin() * 1.0 / (newPlayer.getLoss() + newPlayer.getWin()) * 100 + "%");
+        {
+            System.out.print(newPlayer.getName()+ " now wins " + newPlayer.getWin() + " round(s), and loses " + newPlayer.getLoss ()+ " round(s)." + "Your balance is $" + newPlayer.getBalance() + ".");
+            if(newPlayer.getLoss() == 0)
+            {
+                if(newPlayer.getWin() != 0)
+                    System.out.println(" Your winning percentage is 100%!!!");
+                else
+                    System.out.println(" The game has not been started!");
+            }
+            else
+                System.out.println(" Your winning percentage is " + newPlayer.getWin() * 1.0 / (newPlayer.getLoss() + newPlayer.getWin()) * 100 + "%");
+        }
     }
-    
+
     public boolean isCharacterNumeric(char typeIn)
     {
-        boolean checkNum;
         Character a = typeIn;
         if(a.isDigit(a))
-            checkNum = true;
+            return true;
         else
-            checkNum = false;
-        return checkNum;
+            return false;
     }
 
     public boolean isStringNumeric(String typeIn)
     {
-        boolean checkStrNum = true;
         int position = 0;
-        
+
         while(position < typeIn.length())
         {
             if (isCharacterNumeric(typeIn.charAt(position)))
+            {
+                int length = typeIn.length();
+
+                if (position == typeIn.length() - 1)
                 {
-                    position ++;
-                    if (position == typeIn.length() - 1)
-                        checkStrNum = true; 
+                    return true;
                 }
+            }
             else 
-                {
-                    checkStrNum = false;
-                    break;
-                }
+            {
+                break;
+            }
+            position ++;
         }
-        return checkStrNum;        
+        return false;
     }
-    
+
     public void gamePlay()
     {
-        luckyNumber = new LuckyNumberGenerator();
-        int targetNumber = luckyNumber.getTargetNumber();
-        int round = 1;
-        int guessNumber;
-        while(round <= 3)
-        {   
-            newPlayer.setGuessNumber();
-            if (isStringNumeric(newPlayer.getGuessNumber()))            
+        if(newPlayer.getName() == null)
+        {
+            System.out.println("Please press 1 to set a player first.");
+        }
+        else
+        {
+            //luckyNumber = new RandomNumberGenerator();
+            //consolationPrize = new RandomNumberGenerator();
+            int targetNumber = randomNumber.getTargetNumber();
+            int round = 1;
+            int guessNumber;
+            while(round <= 3)
+            {   
+                newPlayer.setGuessNumber(tpyeInGuessNumber());
+                if (isStringNumeric(newPlayer.getGuessNumber()))            
                 {
                     guessNumber = newPlayer.getNum();
                     if (round == 3)
@@ -141,9 +142,7 @@ public class Game
                         if(guessNumber - targetNumber <= 5 && guessNumber - targetNumber >= -5 && guessNumber <= 100)
                         {
                             newPlayer.setWin();
-                            consolationPrize = new LuckyNumberGenerator();
-                            setPrize();
-                            int conPrize = getPrize();
+                            int conPrize = randomNumber.getPrize();
                             newPlayer.setBalance(conPrize);
                             System.out.println("Congratulations! The lucky number is " + targetNumber + ". Your win and get " + conPrize + " for consolation prize.");
                             break;
@@ -154,15 +153,15 @@ public class Game
                             System.out.println("Sorry, your guesses were wrong. You have lost the game and $1. The lucy number is " + targetNumber + ". Please try again and have a good luck!"); 
                             newPlayer.setBalance(-1);
                             if(newPlayer.getBalance() < 0)
-                               newPlayer.resetBalance();
+                                newPlayer.resetBalance();
                             break;
                         }                
                     }
-                    
+
                     if(guessNumber > 100)
                     {
                         System.out.println("The guess number should be between 1 to 100.");
-                        round ++;                
+
                     }
                     else
                     {            
@@ -186,8 +185,8 @@ public class Game
                         }
                     }
                 }
-                
-            else                
+
+                else                
                 {
                     if(round == 3)
                     {
@@ -195,15 +194,33 @@ public class Game
                     }
                     else
                     {
-                    System.out.println("Please enter an integer number bewteen 1 to 100");
+                        System.out.println("Please enter an integer number bewteen 1 to 100");
                     }
                 }   
-                
-            round ++;
+
+                round ++;
+            }
         }
     }
-            
-    
+
+    public String tpyeInGuessNumber()
+    {
+        Scanner console = new Scanner(System.in);
+        System.out.print("Please enter your guessing number: ");
+        String guessNumber = console.nextLine();
+        return guessNumber;
+    }
+
+    public String setName()
+    {
+        String name;
+        Scanner console = new Scanner(System.in);
+        System.out.print("Please enter your name: ");
+        name = console.nextLine();
+        System.out.println("Welcome and enjoy, " + name);
+        return name;
+    }
+
     public void displayHelp()
     {
         System.out.println("1,Please set up a player before any other option.");
@@ -212,16 +229,5 @@ public class Game
         System.out.println("4,There are 3 chances in a round, and do not waste chance by inputing a number out of range. ");
         System.out.println("5,You will get $10 for rewarding any success guessing in 3 times.");
         System.out.println("6,If your guess number is within ±5 of the lucky number, you will win a round and get $1-$5 consolation prize.");
-    }
-     
-    public void setPrize()
-    {
-        prizeGenerator = new Random();
-        prize = prizeGenerator.nextInt(5);
-    }
-    
-    public int getPrize()
-    {
-        return prize;
     }
 }
